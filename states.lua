@@ -6,18 +6,20 @@ require('states/sPlay') -- playfield
 require('states/sCredits') -- credits
 require('states/sHelp') -- how-to-play
 
+-- function called to init the state engine (should be only called once)
 function statesLoad()
 	-- global var for tracking current state. use all lowercase
 	-- menu 	- sMenu
 	-- play 	- sPlay
 	-- credits 	- sCredits
 	-- help 	- sHelp
-	gameState = "menu" 
-	sMenuLoad()
+	gameState = "menu"
+
+	sMenuLoad() -- move this menu stuff?
 
 end
 
-
+-- extension of love.update(dt)
 function statesUpdate(dt)
 	if gameState == "menu" then
 		sMenuUpdate(dt)
@@ -33,7 +35,7 @@ function statesUpdate(dt)
 
 end
 
-
+-- extension of love.draw()
 function statesDraw()
 	love.graphics.print(gameState, 10, 10)
 	if gameState == "menu" then
@@ -50,6 +52,7 @@ function statesDraw()
 
 end
 
+-- function to transition states
 function statesChangeState(newstate)
 	if newstate == "menu" then
 		sMenuLoad()
@@ -71,6 +74,7 @@ function statesChangeState(newstate)
 
 end
 
+-- extends love.keypressed(k,u)
 function statesKeyPressed(k,u)
 	if gameState == "menu" then
 		sMenuKeyPressed(k,u)
@@ -86,7 +90,7 @@ function statesKeyPressed(k,u)
 
 end
 
-
+-- extends love.keyreleased(k,u)
 function statesKeyReleased(k,u)
 	if gameState == "menu" then
 		sMenuKeyReleased(k,u)
@@ -103,6 +107,7 @@ function statesKeyReleased(k,u)
 
 end
 
+-- extends love.mousepressed(x,y,button)
 function statesMousePressed(x,y,button)
 	if gameState == "menu" then
 		sMenuMousePressed(x,y,button)
@@ -118,6 +123,8 @@ function statesMousePressed(x,y,button)
 
 end
 
+
+-- extends love.mousereleased(x,y,button)
 function statesMouseReleased(x,y,button)
 	if gameState == "menu" then
 		sMenuMouseReleased(x,y,button)
