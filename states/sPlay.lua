@@ -6,9 +6,10 @@ function sPlayLoad()
 	eEnemyLoad()
 
 	-- temp location of spawn code
-	eEnemySpawn(100,100,25)
-	eEnemySpawn(700,700,25)
-	eEnemySpawn(100,700,25)
+	eEnemySpawn(100,100,5)
+	eEnemySpawn(700,700,15)
+	eEnemySpawn(100,700,35)
+	eEnemySpawn(700,100,75)
 
 	love.graphics.setBackgroundColor(64,64,64)
 

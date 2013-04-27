@@ -51,11 +51,27 @@ function ePlayerUpdate(dt)
 
 	-- collision with enemy
 	for i, v in ipairs(eEnemies) do
-		if math.sqrt(math.abs(v.x - ePlayer.x)^2 + math.abs(v.y - ePlayer.y)^2) < v.r + ePlayer.r then 
-			v.rgb = {255,0,0}
+		v.angle = math.atan2((v.y - ePlayer.y), (v.x - ePlayer.x))
+		v.angle = v.angle
+
+		--collision
+		if math.sqrt(math.abs(v.x - ePlayer.x)^2 + math.abs(v.y - ePlayer.y)^2) < v.r + ePlayer.r and v.rigid == true then
+			--v.rgb = {255,0,0}
+
+			-- mass delta
+			local md = v.r/ePlayer.r/2
+			v.dx = v.dx + (ePlayer.dx*md)
+			v.dy = v.dy + (ePlayer.dy*md)
+			ePlayer.dx = ePlayer.dx - (v.dx*md)
+			ePlayer.dy = ePlayer.dy - (v.dy*md)
+
+			--v.rigid = false
+
+		-- no collision
 		else
-			v.rgb = {255,255,255}
+--			v.rgb = {255,255,255}
 		end
+       
 
 	end
 
@@ -64,23 +80,12 @@ end
 
 function ePlayerDraw()
 
---[[
 	if ePlayer.active == true then
 		love.graphics.setColor(0,0,0,ePlayer.alpha)
 		love.graphics.circle("fill", ePlayer.x, ePlayer.y, ePlayer.r*ePlayer.s, 32)
 		local c = ePlayer.rgb
 		love.graphics.setColor(c[1], c[2], c[3],ePlayer.alpha)
 		love.graphics.circle("fill", ePlayer.x, ePlayer.y, ePlayer.r*ePlayer.s*0.9, 32)
-	end
-]]
-
-	-- pixel perfect render
-	if ePlayer.active == true then
-		love.graphics.setColor(0,0,0,ePlayer.alpha)
-		love.graphics.circle("fill", math.floor(ePlayer.x+0.5), math.floor(ePlayer.y+0.5), ePlayer.r*ePlayer.s, 32)
-		local c = ePlayer.rgb
-		love.graphics.setColor(c[1], c[2], c[3],ePlayer.alpha)
-		love.graphics.circle("fill", math.floor(ePlayer.x+0.5), math.floor(ePlayer.y+0.5), ePlayer.r*ePlayer.s*0.9, 32)
 	end
 
 end
