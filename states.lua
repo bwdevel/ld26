@@ -37,6 +37,7 @@ end
 
 -- extension of love.draw()
 function statesDraw()
+	love.graphics.setColor(255,255,255,255)
 	love.graphics.print(gameState, 10, 10)
 	if gameState == "menu" then
 		sMenuDraw()

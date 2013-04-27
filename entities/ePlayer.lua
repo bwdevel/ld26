@@ -6,11 +6,13 @@ function ePlayerLoad()
 		ePlayer.s = 1		-- scale
 		ePlayer.dx = 0		-- x velocity (delta x)
 		ePlayer.dy = 0		-- y velocity (delta y)
-		ePlayer.rgb = {255,255,255}
-		ePlayer.alpha = 255
+		ePlayer.rgb = {255,255,255} -- color
+		ePlayer.alpha = 255			-- alpha blending
 		ePlayer.active = true
 		ePlayer.thrust = 0.25
+		ePlayer.friction = 0.995
 
+		-- player movement states
 		ePlayer.left = false
 		ePlayer.right = false
 		ePlayer.up = false
@@ -28,41 +30,71 @@ end
 function ePlayerUpdate(dt)
 	camera.s = 1/((800/32) / (800/ePlayer.s))
 	if ePlayer.active == true then
+
+		-- apply thrust
 		if ePlayer.left == true then ePlayer.dx = ePlayer.dx - (ePlayer.thrust * dt) end
 		if ePlayer.right == true then ePlayer.dx = ePlayer.dx + (ePlayer.thrust * dt) end
 		if ePlayer.up == true then ePlayer.dy = ePlayer.dy - (ePlayer.thrust * dt) end
 		if ePlayer.down == true then ePlayer.dy = ePlayer.dy + (ePlayer.thrust * dt) end
+		-- apply friction to absense of lateral movement
+		if ePlayer.left == false and ePlayer.right == false then ePlayer.dx = ePlayer.dx *(1 - (ePlayer.friction*dt)) end
+		if ePlayer.up == false and ePlayer.down == false then ePlayer.dy = ePlayer.dy *(1 - (ePlayer.friction*dt)) end
+
 
 		ePlayer.x = ePlayer.x + ePlayer.dx
 		ePlayer.y = ePlayer.y + ePlayer.dy
+	end
+
+	-- temporary collision boundary
+	if (ePlayer.x - ePlayer.r < 0 and ePlayer.dx < 0) or (ePlayer.x + ePlayer.r > 800 and ePlayer.dx > 0) then ePlayer.dx = -(ePlayer.dx) end
+	if (ePlayer.y - ePlayer.r < 0 and ePlayer.dy < 0) or (ePlayer.y + ePlayer.r > 800 and ePlayer.dy > 0) then ePlayer.dy = -(ePlayer.dy) end
+
+	-- collision with enemy
+	for i, v in ipairs(eEnemies) do
+		if math.sqrt(math.abs(v.x - ePlayer.x)^2 + math.abs(v.y - ePlayer.y)^2) < v.r + ePlayer.r then 
+			v.rgb = {255,0,0}
+		else
+			v.rgb = {255,255,255}
+		end
+
 	end
 
 end
 
 
 function ePlayerDraw()
+
+--[[
 	if ePlayer.active == true then
+		love.graphics.setColor(0,0,0,ePlayer.alpha)
+		love.graphics.circle("fill", ePlayer.x, ePlayer.y, ePlayer.r*ePlayer.s, 32)
 		local c = ePlayer.rgb
 		love.graphics.setColor(c[1], c[2], c[3],ePlayer.alpha)
-		love.graphics.circle("fill", ePlayer.x, ePlayer.y, ePlayer.r*ePlayer.s, 32)
+		love.graphics.circle("fill", ePlayer.x, ePlayer.y, ePlayer.r*ePlayer.s*0.9, 32)
 	end
+]]
+
+	-- pixel perfect render
+	if ePlayer.active == true then
+		love.graphics.setColor(0,0,0,ePlayer.alpha)
+		love.graphics.circle("fill", math.floor(ePlayer.x+0.5), math.floor(ePlayer.y+0.5), ePlayer.r*ePlayer.s, 32)
+		local c = ePlayer.rgb
+		love.graphics.setColor(c[1], c[2], c[3],ePlayer.alpha)
+		love.graphics.circle("fill", math.floor(ePlayer.x+0.5), math.floor(ePlayer.y+0.5), ePlayer.r*ePlayer.s*0.9, 32)
+	end
+
 end
 
 function ePlayerKeyPressed(k,u)
-	if ePlayer.active == true then
-		if k == 'a' or k == 'left' then ePlayer.left = true end
-		if k == 'w' or k == 'up' then ePlayer.up = true end
-		if k == 'd' or k == 'right' then ePlayer.right = true end
-		if k == 's' or k == 'down' then ePlayer.down = true end
-	end
+	if k == 'a' or k == 'left' then ePlayer.left = true end
+	if k == 'w' or k == 'up' then ePlayer.up = true end
+	if k == 'd' or k == 'right' then ePlayer.right = true end
+	if k == 's' or k == 'down' then ePlayer.down = true end
 end
 
 function ePlayerKeyReleased(k,u)
-	if ePlayer.active == true then
-		if k == 'a' or k == 'left' then ePlayer.left = false end
-		if k == 'w' or k == 'up' then ePlayer.up = false end
-		if k == 'd' or k == 'right' then ePlayer.right = false end
-		if k == 's' or k == 'down' then ePlayer.down = false end
-	end
-
+	if k == 'a' or k == 'left' then ePlayer.left = false end
+	if k == 'w' or k == 'up' then ePlayer.up = false end
+	if k == 'd' or k == 'right' then ePlayer.right = false end
+	if k == 's' or k == 'down' then ePlayer.down = false end
 end
