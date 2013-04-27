@@ -11,13 +11,13 @@ end
 
 
 function sMenuDraw()
-	love.graphics.setFont(font18)
+	love.graphics.setFont(font12)
 	for x = 2, 5 do
 		local text = menuItems[x]
 		if x == menuItem then
 			text = ">> " .. text .. " <<"
 		end
-		love.graphics.print(text, math.floor(love.graphics.getWidth()/2 - (font18:getWidth(text)/2)), math.floor(love.graphics.getHeight()/11*((x-1)*2)) )
+		love.graphics.print(text, math.floor(love.graphics.getWidth()/2 - (font12:getWidth(text)/2)), math.floor(love.graphics.getHeight()/11*((x-1)*2)) )
 	end
 
 end

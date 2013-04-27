@@ -5,7 +5,7 @@ require('states')
 -- loads once on engine load
 function love.load()
 	statesLoad()
-	font18 = love.graphics.newFont("fonts/PressStart2P.ttf",18)
+	font12 = love.graphics.newFont("fonts/PressStart2P.ttf",12)
 
 end
 

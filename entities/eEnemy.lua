@@ -1,6 +1,6 @@
 function eEnemyLoad()
 	eEnemies = {}
-	maxVel = 5
+	maxVel = 3
 
 
 end
@@ -25,11 +25,20 @@ function eEnemyUpdate(dt)
 
 --				if math.sqrt(math.abs(vv.x - v.x)^2 + math.abs(vv.y - v.y)^2) < vv.r + v.r and vv.rigid == true then
 					
-					local md = vv.r/v.r/2 -- mass delta
+					local md = vv.r/v.r/3 -- (was /2 ) mass delta
 					vv.dx = vv.dx + (v.dx*md)
 					vv.dy = vv.dy + (v.dy*md)
 					v.dx = v.dx - (vv.dx*md)
 					v.dy = v.dy - (vv.dy*md)
+					if vv.r > 20 and v.r > 20 then 
+						if vv.r < v.r then
+							vv.r = vv.r - 10
+							v.r = v.r + 10
+						elseif vv.r > v.r then
+							vv.r = vv.r + 10
+							v.r = v.r - 10
+						end
+					end
 				end
 
 			end
@@ -44,9 +53,22 @@ function eEnemyUpdate(dt)
 			v.dx = (v.dx - maxVel)/v.dx
 			v.dy = maxVel
 		end
+
+		-- update movement
 		v.x = v.x + v.dx
 		v.y = v.y + v.dy
 
+		-- update Color
+		local size = v.r
+		size = size - 10
+		if size > 50 then
+			v.rgb[1] = 255
+			v.rgb[2] = 255 - (255 * (size-50)/50)
+		else
+			v.rgb[1] = size/50*255
+			v.rgb[2] = 255
+		end
+		v.rgb[3] = 0
 
 	end
 

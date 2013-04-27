@@ -2,7 +2,7 @@ function ePlayerLoad()
 	ePlayer = {}
 		ePlayer.x = 400
 		ePlayer.y = 400
-		ePlayer.r =	32		-- radius/size
+		ePlayer.r =	75		-- radius/size
 		ePlayer.s = 1		-- scale
 		ePlayer.dx = 0		-- x velocity (delta x)
 		ePlayer.dy = 0		-- y velocity (delta y)
@@ -63,9 +63,33 @@ function ePlayerUpdate(dt)
 			ePlayer.dx = ePlayer.dx - (v.dx*md)
 			ePlayer.dy = ePlayer.dy - (v.dy*md)
 
+		if ePlayer.r > 20 and v.r > 20 then 
+			if ePlayer.r > v.r then
+				ePlayer.r = ePlayer.r - 10
+				v.r = v.r + 10
+			elseif ePlayer.r < v.r then
+				ePlayer.r = ePlayer.r + 10
+				v.r = v.r - 10
+			end
+		end
+
+
 			--v.rigid = false
 		end
 	end
+
+	local size = ePlayer.r
+	size = size - 10
+	if size > 50 then
+		ePlayer.rgb[1] = 255
+		ePlayer.rgb[2] = 255 - (255 * (size-50)/50)
+	else
+		ePlayer.rgb[1] = size/50*255
+		ePlayer.rgb[2] = 255
+	end
+	ePlayer.rgb[3] = 0
+		
+
 
 end
 
