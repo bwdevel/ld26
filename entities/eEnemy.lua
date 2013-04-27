@@ -1,5 +1,6 @@
 function eEnemyLoad()
 	eEnemies = {}
+	maxVel = 5
 
 
 end
@@ -18,25 +19,35 @@ function eEnemyUpdate(dt)
 
 
 		-- collide with other enemies (broke as fuck)
+		for ii, vv in ipairs(eEnemies) do
+			if v.x ~= vv.x and v.y ~= vv.y then
+				if getDist(vv.x,vv.y,v.x,v.y) < vv.r + v.r and vv.rigid == true then
 
---[[
-		for ii,vv in ipairs(eEnemies) do
-			if not (v.x == vv.x and v.y==vv.y) then
-				if math.sqrt(math.abs(vv.x - v.x)^2 + math.abs(vv.y - v.y)^2) < vv.r + v.r and vv.rigid == true then
+--				if math.sqrt(math.abs(vv.x - v.x)^2 + math.abs(vv.y - v.y)^2) < vv.r + v.r and vv.rigid == true then
 					
 					local md = vv.r/v.r/2 -- mass delta
 					vv.dx = vv.dx + (v.dx*md)
 					vv.dy = vv.dy + (v.dy*md)
 					v.dx = v.dx - (vv.dx*md)
-					v = v.dy - (vv.dy*md)
+					v.dy = v.dy - (vv.dy*md)
 				end
 
 			end
 		end
-	]]
-		-- update location
+
+		-- choke out high velocities
+		if v.dx > maxVel then 
+			v.dy = (v.dx - maxVel)/v.dx
+			v.dx = maxVel
+		end
+		if v.dy > maxVel then
+			v.dx = (v.dx - maxVel)/v.dx
+			v.dy = maxVel
+		end
 		v.x = v.x + v.dx
 		v.y = v.y + v.dy
+
+
 	end
 
 end

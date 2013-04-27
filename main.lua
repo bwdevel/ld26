@@ -53,3 +53,15 @@ end
 function love.quit()
 
 end
+
+function table.copy(t)
+	local t2 = {}
+	for k,v in pairs(t) do
+		t2[k] = v
+	end
+	return t2
+end
+
+function getDist(x1,y1,x2,y2)
+	return math.sqrt(math.abs(x1-x2)^2 + math.abs(y1-y2)^2)
+end

@@ -6,6 +6,7 @@ function ePlayerLoad()
 		ePlayer.s = 1		-- scale
 		ePlayer.dx = 0		-- x velocity (delta x)
 		ePlayer.dy = 0		-- y velocity (delta y)
+		ePlayer.maxV = 5
 		ePlayer.rgb = {255,255,255} -- color
 		ePlayer.alpha = 255			-- alpha blending
 		ePlayer.active = true
@@ -56,23 +57,14 @@ function ePlayerUpdate(dt)
 
 		--collision
 		if math.sqrt(math.abs(v.x - ePlayer.x)^2 + math.abs(v.y - ePlayer.y)^2) < v.r + ePlayer.r and v.rigid == true then
-			--v.rgb = {255,0,0}
-
-			-- mass delta
-			local md = v.r/ePlayer.r/2
+			local md = v.r/ePlayer.r/2			-- mass delta
 			v.dx = v.dx + (ePlayer.dx*md)
 			v.dy = v.dy + (ePlayer.dy*md)
 			ePlayer.dx = ePlayer.dx - (v.dx*md)
 			ePlayer.dy = ePlayer.dy - (v.dy*md)
 
 			--v.rigid = false
-
-		-- no collision
-		else
---			v.rgb = {255,255,255}
 		end
-       
-
 	end
 
 end
