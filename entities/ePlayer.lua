@@ -53,31 +53,30 @@ function ePlayerUpdate(dt)
 	-- collision with enemy
 	for i, v in ipairs(eEnemies) do
 		v.angle = math.atan2((v.y - ePlayer.y), (v.x - ePlayer.x))
-		v.angle = v.angle
 
-		--collision
-		if math.sqrt(math.abs(v.x - ePlayer.x)^2 + math.abs(v.y - ePlayer.y)^2) < v.r + ePlayer.r and v.rigid == true then
-			local md = v.r/ePlayer.r/2			-- mass delta
-			v.dx = v.dx + (ePlayer.dx*md)
-			v.dy = v.dy + (ePlayer.dy*md)
-			ePlayer.dx = ePlayer.dx - (v.dx*md)
-			ePlayer.dy = ePlayer.dy - (v.dy*md)
+		--collision/drain
+		local dist = getDist(ePlayer.x, ePlayer.y, v.x, v.y)
+		if dist < (v.r + ePlayer.r) * 1.20 then 
 
-		if ePlayer.r > 20 and v.r > 20 then 
-			if ePlayer.r > v.r then
-				ePlayer.r = ePlayer.r - 10
-				v.r = v.r + 10
-			elseif ePlayer.r < v.r then
-				ePlayer.r = ePlayer.r + 10
-				v.r = v.r - 10
+			if ePlayer.r > v.r and ePlayer.r > minSize then
+				ePlayer.r = ePlayer.r - (drainRate * dt)
+				v.r = v.r + (drainRate * dt)
+			elseif ePlayer.r < v.r and v.r > minSize then
+				ePlayer.r = ePlayer.r + (drainRate * dt)
+				v.r = v.r - (drainRate * dt)
 			end
-		end
 
-
-			--v.rigid = false
+			if dist < v.r + ePlayer.r then			
+				local md = v.r/ePlayer.r/2			-- mass delta
+				v.dx = v.dx + (ePlayer.dx*md)
+				v.dy = v.dy + (ePlayer.dy*md)
+				ePlayer.dx = ePlayer.dx - (v.dx*md)
+				ePlayer.dy = ePlayer.dy - (v.dy*md)
+			end
 		end
 	end
 
+	-- this is ugly; fix
 	local size = ePlayer.r
 	size = size - 10
 	if size > 50 then

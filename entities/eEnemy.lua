@@ -1,6 +1,8 @@
 function eEnemyLoad()
 	eEnemies = {}
 	maxVel = 3
+	drainRate = 10 -- units per second of drain
+	drainDist = 1.20 -- percentage of distance between centers at which draining occurs
 
 
 end
@@ -17,30 +19,29 @@ function eEnemyUpdate(dt)
 		if (v.x - v.r < 0 and v.dx < 0) or (v.x + v.r > 800 and v.dx >0) then v.dx = -(v.dx) end
 		if (v.y - v.r < 0 and v.dy < 0) or (v.y + v.r > 800 and v.dy >0) then v.dy = -(v.dy) end
 
-
 		-- collide with other enemies (broke as fuck)
 		for ii, vv in ipairs(eEnemies) do
-			if v.x ~= vv.x and v.y ~= vv.y then
-				if getDist(vv.x,vv.y,v.x,v.y) < vv.r + v.r and vv.rigid == true then
+			if v.x ~= vv.x and v.y ~= vv.y then -- make sure not the same object
+				local dist = getDist(vv.x,vv.y,v.x,v.y) -- distance between object
+				-- drain range
+				if dist < (vv.r + v.r) * drainDist then
+					if vv.r < v.r  and vv.r > minSize then
+						vv.r = vv.r - (drainRate*dt)
+						v.r = v.r + (drainRate*dt)
+					elseif vv.r > v.r and v.r > minSize then
+						vv.r = vv.r + (drainRate *dt)
+						v.r = v.r - (drainRate * dt)
+					end
 
---				if math.sqrt(math.abs(vv.x - v.x)^2 + math.abs(vv.y - v.y)^2) < vv.r + v.r and vv.rigid == true then
-					
-					local md = vv.r/v.r/3 -- (was /2 ) mass delta
-					vv.dx = vv.dx + (v.dx*md)
-					vv.dy = vv.dy + (v.dy*md)
-					v.dx = v.dx - (vv.dx*md)
-					v.dy = v.dy - (vv.dy*md)
-					if vv.r > 20 and v.r > 20 then 
-						if vv.r < v.r then
-							vv.r = vv.r - 10
-							v.r = v.r + 10
-						elseif vv.r > v.r then
-							vv.r = vv.r + 10
-							v.r = v.r - 10
-						end
+					--collision range
+					if dist < vv.r + v.r then
+						local md = vv.r/v.r/3 -- (was /2 ) mass delta
+						vv.dx = vv.dx + (v.dx*md)
+						vv.dy = vv.dy + (v.dy*md)
+						v.dx = v.dx - (vv.dx*md)
+						v.dy = v.dy - (vv.dy*md)
 					end
 				end
-
 			end
 		end
 

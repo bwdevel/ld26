@@ -6,11 +6,11 @@ function sPlayLoad()
 	eEnemyLoad()
 
 	maxSize = 110
-	minSize = 10
+	minSize = 20
 
 	-- temp location of spawn code
 	eEnemySpawn(100,100,95)
-	eEnemySpawn(700,700,15)
+	eEnemySpawn(700,700,20)
 	eEnemySpawn(100,700,35)
 	eEnemySpawn(700,100,75)
 
